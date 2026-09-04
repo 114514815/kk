@@ -74,20 +74,84 @@
   // -------- GitHub Stars 计数 --------
   var starsEl = document.querySelector('.stars-count');
   if (starsEl && window.fetch) {
-    var url = 'https://api.github.com/repos/ZCH-KK/kk';
-    fetch(url, { headers: { 'Accept': 'application/vnd.github+json' } })
-      .then(function (r) {
-        if (!r.ok) throw new Error('HTTP ' + r.status);
-        return r.json();
-      })
-      .then(function (data) {
-        var n = data && typeof data.stargazers_count === 'number' ? data.stargazers_count : null;
-        if (n == null) throw new Error('no count');
-        var formatted = n >= 1000 ? (n / 1000).toFixed(1).replace(/\.0$/, '') + 'k' : String(n);
-        starsEl.textContent = formatted;
-      })
-      .catch(function () {
-        starsEl.setAttribute('title', 'GitHub stars 加载失败');
-      });
+    var GH_URL = 'https://api.github.com/repos/ZCH-KK/kk';
+
+    // 根据当前 .stats-label 的 data-en 是否空,判断英文/中文后缀
+    function detectCurrentLang() {
+      var label = document.querySelector('.stats-label');
+      if (label) {
+        var en = label.getAttribute('data-en');
+        // en 文案为空(""),说明 label 在英文态会被清空,即当前是 en
+        return (en === '') ? 'en' : 'zh';
+      }
+      return 'zh';
+    }
+
+    // 在指定语言下展示格式化数字
+    function paintCount(n) {
+      var lang = detectCurrentLang();
+      var formatted = n >= 1000 ? (n / 1000).toFixed(1).replace(/\.0$/, '') + 'k' : String(n);
+      starsEl.textContent = formatted;
+      // 同步刷一下 data-zh / data-en 的缓存值,这样 lang.js 切语言时如果
+      // 还没 fetch 完不会再回到 "…"
+      starsEl.setAttribute('data-zh', formatted);
+      starsEl.setAttribute('data-en', formatted);
+    }
+
+    function clearCount() {
+      // 用当前语言对应的占位符
+      var lang = detectCurrentLang();
+      var placeholder = (lang === 'en') ? '…' : '…';
+      starsEl.textContent = placeholder;
+      starsEl.setAttribute('data-zh', placeholder);
+      starsEl.setAttribute('data-en', placeholder);
+    }
+
+    function loadStars() {
+      clearCount();
+      // 移除之前可能残留的 title(失败标记),重新显示
+      starsEl.removeAttribute('title');
+      // 恢复不透明,避免之前失败留下的淡化样式
+      starsEl.style.opacity = '';
+
+      // 用 AbortController 取消上次未完成的请求(支持时)
+      if (window._starsCtrl && typeof window._starsCtrl.abort === 'function') {
+        try { window._starsCtrl.abort(); } catch (e) {}
+      }
+      var ctrl = null;
+      if (typeof AbortController === 'function') {
+        ctrl = new AbortController();
+        window._starsCtrl = ctrl;
+      }
+
+      var opts = {
+        headers: { 'Accept': 'application/vnd.github+json' }
+      };
+      if (ctrl) opts.signal = ctrl.signal;
+
+      fetch(GH_URL, opts)
+        .then(function (r) {
+          if (!r.ok) throw new Error('HTTP ' + r.status);
+          return r.json();
+        })
+        .then(function (data) {
+          var n = data && typeof data.stargazers_count === 'number' ? data.stargazers_count : null;
+          if (n == null) throw new Error('no count');
+          paintCount(n);
+        })
+        .catch(function (err) {
+          // abort 是切换语言触发的"正常取消",不是真错误,不显示 title
+          if (err && (err.name === 'AbortError' || err.code === 20)) return;
+          starsEl.setAttribute('title', 'GitHub stars 加载失败');
+          // 失败时也保持 data-* 占位符,切语言时不会变成 "…"
+          clearCount();
+        });
+    }
+
+    // 首次加载
+    loadStars();
+
+    // 监听语言切换 — 重置占位符 + 重新拉数据
+    document.addEventListener('kk:lang-changed', loadStars);
   }
 })();
