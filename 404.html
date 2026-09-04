@@ -1,0 +1,50 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover" />
+  <meta name="theme-color" content="#050f1f" />
+  <meta name="format-detection" content="telephone=no, email=no, address=no" />
+
+  <meta http-equiv="Content-Security-Policy"
+        content="default-src 'none';
+                 style-src 'self';
+                 script-src 'self';
+                 img-src 'self' data:;
+                 font-src 'self';
+                 connect-src 'none';
+                 base-uri 'none';
+                 form-action 'none';
+                 frame-ancestors 'none';
+                 object-src 'none';" />
+  <meta http-equiv="X-Content-Type-Options" content="nosniff" />
+  <meta name="referrer" content="no-referrer" />
+  <meta http-equiv="Permissions-Policy"
+        content="camera=(), microphone=(), geolocation=(), payment=(),
+                 usb=(), midi=(), accelerometer=(), gyroscope=(),
+                 magnetometer=(), display-capture=(), browsing-topics=();" />
+
+  <title>404 · kk</title>
+  <link rel="icon" href="data:," />
+  <link rel="stylesheet" href="assets/style.css" />
+  <link rel="stylesheet" href="assets/404.css" />
+</head>
+<body>
+  <main class="errpage" aria-labelledby="err-title">
+    <p class="err-code" aria-hidden="true">404</p>
+    <h1 id="err-title" class="err-title" data-zh="页面蒸发在玻璃里了" data-en="The page evaporated into the glass">
+      页面蒸发在玻璃里了
+    </h1>
+    <p class="err-desc" data-zh="没找到你要的内容。要不要回首页看看？" data-en="The content you wanted isn't here. Care to head back?">
+      没找到你要的内容。要不要回首页看看？
+    </p>
+    <a class="boost err-home"
+       href="/kk/"
+       rel="noopener noreferrer">
+      <span data-zh="回到首页" data-en="Back to home">回到首页</span>
+    </a>
+  </main>
+  <script src="assets/main.js" defer></script>
+  <script src="assets/lang.js" defer></script>
+</body>
+</html>

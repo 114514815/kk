@@ -1,0 +1,32 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1200 630">
+  <defs>
+    <linearGradient id="bg" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%"  stop-color="#050f1f"/>
+      <stop offset="100%" stop-color="#0a1e38"/>
+    </linearGradient>
+    <linearGradient id="kk" x1="0%" y1="0%" x2="0%" y2="100%">
+      <stop offset="0%"   stop-color="#ffffff" stop-opacity=".85"/>
+      <stop offset="50%"  stop-color="#f3f8ff" stop-opacity=".55"/>
+      <stop offset="100%" stop-color="#cfe3ff" stop-opacity=".7"/>
+    </linearGradient>
+    <radialGradient id="glow1" cx="20%" cy="20%" r="40%">
+      <stop offset="0%" stop-color="#ff7ed9" stop-opacity=".4"/>
+      <stop offset="100%" stop-color="#ff7ed9" stop-opacity="0"/>
+    </radialGradient>
+    <radialGradient id="glow2" cx="80%" cy="80%" r="40%">
+      <stop offset="0%" stop-color="#5ce0ff" stop-opacity=".4"/>
+      <stop offset="100%" stop-color="#5ce0ff" stop-opacity="0"/>
+    </radialGradient>
+  </defs>
+  <rect width="1200" height="630" fill="url(#bg)"/>
+  <rect width="1200" height="630" fill="url(#glow1)"/>
+  <rect width="1200" height="630" fill="url(#glow2)"/>
+  <text x="600" y="380" text-anchor="middle"
+        font-family="-apple-system, Segoe UI, Helvetica Neue, Arial, sans-serif"
+        font-weight="800" font-size="380" letter-spacing="-12"
+        fill="url(#kk)">kk</text>
+  <text x="600" y="500" text-anchor="middle"
+        font-family="-apple-system, Segoe UI, Helvetica Neue, Arial, sans-serif"
+        font-weight="400" font-size="36" letter-spacing="2"
+        fill="rgba(255,255,255,.7)">LIQUID GLASS · 2026</text>
+</svg>

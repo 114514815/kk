@@ -1,0 +1,363 @@
+/* ======================================================
+   兼容性补齐:
+   - 用 @supports 做特性检测:支持 backdrop-filter 的设备走毛玻璃,不支持的走纯色背景
+   - inset 在 Safari 14.4 才开始支持,加 fallback top/right/bottom/left
+   - prefers-reduced-motion / prefers-color-scheme 双查询保留
+   - 移动端安全区用 env(safe-area-inset-*)
+   - 触摸屏禁用 300ms 延迟 + 禁用双击缩放:touch-action: manipulation
+   ====================================================== */
+* { margin: 0; padding: 0; box-sizing: border-box; }
+html, body { height: 100%; width: 100%; }
+
+html {
+  /* 防止某些 Android 浏览器因溢出横滚 */
+  overflow-x: hidden;
+  /* 移动端:禁用双击缩放,禁用双指默认手势但不阻止 pinch(可单独管) */
+  touch-action: manipulation;
+  /* 高 DPI 文字锐化 */
+  -webkit-text-size-adjust: 100%;
+}
+
+body {
+  position: relative;
+  overflow: hidden;
+  /* 全文不可选中、可复制:展示型页面无所谓,但消除长按 iOS Safari 弹出选择菜单 */
+  -webkit-user-select: none;
+  user-select: none;
+  /* 禁用 iOS Safari 长按链接弹出菜单(只针对 .boost 的图片/链接预览会触发) */
+  -webkit-touch-callout: none;
+  /* 高 DPI 字体平滑 */
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+
+  font-family: -apple-system, "SF Pro Display", BlinkMacSystemFont,
+               "Segoe UI", "PingFang SC", "Hiragino Sans GB",
+               "Microsoft YaHei", "Helvetica Neue", Arial, sans-serif;
+  background:
+    radial-gradient(120% 90% at 76% 20%, #0a1a30 0%, transparent 55%),
+    radial-gradient(110% 80% at 20% 80%, #081427 0%, transparent 60%),
+    linear-gradient(160deg, #050f1f 0%, #0a1e38 55%, #050f1f 100%);
+  /* 移动浏览器 100vh 在 URL 栏显示/隐藏时会跳,改用 -webkit-fill-available + dvh 兜底 */
+  min-height: 100vh;
+  min-height: -webkit-fill-available;
+  min-height: 100dvh;
+}
+
+/* ================= 模糊光圈流动背景(性能优化版) ================= */
+.backdrop {
+  position: absolute;
+  top: 0; right: 0; bottom: 0; left: 0;   /* inset fallback,旧浏览器也能吃 */
+  overflow: hidden;
+  z-index: 0;
+}
+
+.orbit {
+  position: absolute;
+  top: -14%; right: -14%; bottom: -14%; left: -14%;
+  transform-origin: 50% 50%;
+  animation: spin 30s linear infinite;
+  will-change: transform;
+}
+@keyframes spin { from { transform: rotate(0deg); } to { transform: rotate(360deg); } }
+
+.blob { position: absolute; width: 60vw; height: 60vw; border-radius: 50%; }
+.b1 { background: radial-gradient(circle, #ff7ed9 0%, #b64bd6 26%, rgba(182,75,214,0) 62%);
+      top: 12%; left: 8%; opacity: .7; }
+.b2 { background: radial-gradient(circle, #5ce0ff 0%, #2f8fd4 26%, rgba(47,143,212,0) 62%);
+      top: 12%; right: 8%; opacity: .7; }
+.b3 { background: radial-gradient(circle, #ffe27a 0%, #f0a24b 24%, rgba(240,162,75,0) 60%);
+      bottom: 12%; left: 8%; opacity: .65; }
+.b4 { background: radial-gradient(circle, #8affc1 0%, #37b98b 24%, rgba(55,185,139,0) 60%);
+      bottom: 12%; right: 8%; opacity: .6; }
+
+@media (prefers-reduced-motion: reduce) {
+  .orbit, .blob { animation: none !important; }
+}
+
+/* ================= kk 透明液态玻璃字 ================= */
+.glass-word {
+  position: absolute;
+  top: 0; right: 0; bottom: 0; left: 0;
+  z-index: 2;
+  display: grid;
+  place-items: center;
+  cursor: pointer;
+  /* 关键修复:旧 Safari 把 grid 简写拆开处理,保险起见保留显式 display */
+}
+.ghost {
+  width: 88vw;
+  max-width: 900px;
+  /* 老 Safari 不识别 min(),改用 vw + max-width 双重限制 */
+  /* SVG viewBox 1000x440,文字 y=308 font-size 330,导致实际字形
+     重心略低于 viewBox 中心 70%处;这里上提 6%让视觉重心贴正中间 */
+  transform: translateY(-6%);
+  -webkit-transform: translateY(-6%);
+}
+.ghost svg { width: 100%; height: auto; display: block; }
+
+/* ================= 涟漪 ================= */
+.ripple {
+  position: fixed;
+  width: 40px; height: 40px; border-radius: 50%;
+  transform: translate(-50%,-50%) scale(.15);
+  background: radial-gradient(circle,
+      rgba(255,255,255,0) 18%,
+      rgba(255,255,255,.35) 34%,
+      rgba(255,255,255,0) 58%);
+  filter: blur(4px);
+  animation: ripple .8s cubic-bezier(.22,.61,.36,1) forwards;
+  pointer-events: none;
+  z-index: 9;
+  /* 涟漪不应该被父层 transform 影响 position:fixed 已经是视口定位,稳 */
+}
+.ripple::after {
+  content: "";
+  position: absolute;
+  top: -12%; right: -12%; bottom: -12%; left: -12%;
+  border-radius: 50%;
+  background: radial-gradient(circle,
+      rgba(255,255,255,0) 40%,
+      rgba(200,230,255,.28) 62%,
+      rgba(255,255,255,0) 78%);
+  filter: blur(5px);
+}
+@keyframes ripple {
+  0%   { transform: translate(-50%,-50%) scale(.15); opacity:0; }
+  18%  { opacity:.9; }
+  100% { transform: translate(-50%,-50%) scale(16); opacity:0; }
+}
+
+/* ================= 助力按钮 ================= */
+.boost {
+  position: absolute;
+  left: 50%;
+  /* bottom 用 calc + 安全区适配:iPhone 14 Pro 等设备的 Home Indicator 区域 */
+  bottom: calc(8vh + env(safe-area-inset-bottom, 0px));
+  transform: translateX(-50%);
+  z-index: 3;
+  display: inline-block;
+  padding: 12px 22px;
+  /* 移动端最小可点区域 44x44 (Apple HIG / Material) */
+  min-height: 44px;
+  font-size: 15px;
+  font-weight: 500;
+  letter-spacing: 0.5px;
+  color: rgba(255, 255, 255, 0.92);
+  text-decoration: none;
+  background: rgba(255, 255, 255, 0.12);
+  border: 1px solid rgba(255, 255, 255, 0.28);
+  border-radius: 999px;
+  /* 毛玻璃:旧 Safari/Chrome 用 -webkit- 前缀 */
+  -webkit-backdrop-filter: blur(12px) saturate(140%);
+  backdrop-filter: blur(12px) saturate(140%);
+  box-shadow: 0 4px 18px rgba(0, 0, 0, 0.18),
+              inset 0 1px 0 rgba(255, 255, 255, 0.18);
+  transition: transform .18s cubic-bezier(.34, 1.56, .64, 1),
+              background .18s ease,
+              border-color .18s ease;
+  /* 移动端:禁用高亮(尤其是 Android Chrome 长按会出蓝色框) */
+  -webkit-tap-highlight-color: transparent;
+}
+.boost:hover {
+  background: rgba(255, 255, 255, 0.18);
+  border-color: rgba(255, 255, 255, 0.45);
+  transform: translateX(-50%) translateY(-1px);
+}
+.boost:active {
+  transform: translateX(-50%) scale(.96);
+}
+.boost:focus {
+  outline: 2px solid rgba(255, 255, 255, 0.85);
+  outline-offset: 3px;
+}
+/* :focus-visible 旧 Safari/Chrome 不识别,直接用 :focus 双保险 */
+.boost:focus:not(:focus-visible) { outline: none; }
+
+@media (prefers-reduced-motion: reduce) {
+  .boost { transition: none; }
+}
+
+/* 尊重用户偏好:减少动画时涟漪也禁掉 */
+@media (prefers-reduced-motion: reduce) {
+  .ripple { animation: none !important; display: none; }
+}
+
+/* ===== 特性检测兜底:不支持 backdrop-filter 的浏览器走纯色背景 ===== */
+@supports not ((backdrop-filter: blur(1px)) or (-webkit-backdrop-filter: blur(1px))) {
+  .boost {
+    background: rgba(20, 35, 60, 0.85);
+    border-color: rgba(255, 255, 255, 0.35);
+  }
+}
+
+/* ===== 小屏手机适配 ===== */
+@media (max-width: 480px) {
+  .ghost { width: 92vw; }
+  .boost {
+    font-size: 14px;
+    padding: 11px 20px;
+  }
+  .blob { width: 80vw; height: 80vw; }
+}
+
+/* ===== 横屏手机:按钮别贴底太远 ===== */
+@media (max-height: 500px) and (orientation: landscape) {
+  .boost { bottom: calc(4vh + env(safe-area-inset-bottom, 0px)); }
+}
+
+/* ===== 减少动画时,顺便降一下背景动画频率(可选) ===== */
+/* ===== B 组新增:副标题 / Stars 计数 / 语言切换 / Footer / Skip Link ===== */
+.subtitle {
+  margin: 18px 0 6px;
+  font-size: clamp(14px, 1.6vw, 20px);
+  font-weight: 300;
+  letter-spacing: .35em;
+  text-align: center;
+  color: rgba(255, 255, 255, .75);
+  text-shadow: 0 1px 8px rgba(0, 0, 0, .35);
+  pointer-events: none;
+  user-select: none;
+}
+
+.stats {
+  position: absolute;
+  left: 50%;
+  top: 14%;
+  transform: translateX(-50%);
+  margin: 0;
+  display: flex;
+  align-items: baseline;
+  justify-content: center;
+  gap: .35em;
+  font-size: clamp(12px, 1.3vw, 15px);
+  font-weight: 400;
+  color: rgba(220, 235, 255, .85);
+  pointer-events: none;
+  user-select: none;
+  z-index: 3;
+}
+.stats-count {
+  font-variant-numeric: tabular-nums;
+  font-weight: 600;
+  color: #fff;
+  transition: opacity .25s;
+}
+.stats-count[title] { /* 加载失败时轻微淡化提示 */
+  color: rgba(220, 235, 255, .55);
+}
+
+.lang-switch {
+  position: absolute;
+  left: 50%;
+  top: 8%;
+  transform: translateX(-50%);
+  margin: 0;
+  display: inline-flex;
+  gap: 6px;
+  padding: 4px;
+  border-radius: 999px;
+  z-index: 3;
+  background: rgba(255, 255, 255, .08);
+  border: 1px solid rgba(255, 255, 255, .18);
+  backdrop-filter: blur(14px) saturate(180%);
+  -webkit-backdrop-filter: blur(14px) saturate(180%);
+  box-shadow:
+    0 4px 16px rgba(0, 0, 0, .25),
+    inset 0 1px 0 rgba(255, 255, 255, .15);
+}
+.lang-btn {
+  appearance: none;
+  -webkit-appearance: none;
+  background: transparent;
+  border: 0;
+  padding: 6px 14px;
+  min-height: 32px;
+  border-radius: 999px;
+  font: inherit;
+  font-size: 13px;
+  color: rgba(220, 235, 255, .75);
+  cursor: pointer;
+  transition: background .2s, color .2s, transform .15s;
+}
+.lang-btn:hover { color: #fff; }
+.lang-btn:active { transform: scale(.94); }
+.lang-btn[aria-pressed="true"] {
+  background: linear-gradient(135deg,
+    rgba(255, 255, 255, .22),
+    rgba(255, 255, 255, .08));
+  color: #fff;
+  box-shadow:
+    inset 0 1px 0 rgba(255, 255, 255, .25),
+    0 1px 4px rgba(0, 0, 0, .25);
+}
+.lang-btn:focus-visible {
+  outline: 2px solid #5ce0ff;
+  outline-offset: 2px;
+}
+
+/* footer */
+.site-foot {
+  position: fixed;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  padding: 6px 12px calc(6px + env(safe-area-inset-bottom, 0px));
+  text-align: center;
+  font-size: 11px;
+  color: rgba(220, 235, 255, .45);
+  pointer-events: none;
+  z-index: 10;
+}
+
+/* skip-link:键盘 Tab 时出现,平时藏 */
+.skip-link {
+  position: absolute;
+  top: -100px;
+  left: 8px;
+  padding: 8px 14px;
+  background: #0a1e38;
+  color: #fff;
+  border: 2px solid #5ce0ff;
+  border-radius: 6px;
+  text-decoration: none;
+  font-size: 14px;
+  z-index: 1000;
+  transition: top .15s;
+}
+.skip-link:focus { top: 8px; outline: none; }
+
+/* 错误页 */
+.errpage {
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: 24px;
+  text-align: center;
+  background: linear-gradient(135deg, #050f1f 0%, #0a1e38 100%);
+  color: #fff;
+  font-family: -apple-system, "Segoe UI", "Helvetica Neue", Arial, sans-serif;
+}
+.err-code {
+  font-size: clamp(96px, 18vw, 200px);
+  font-weight: 800;
+  margin: 0;
+  letter-spacing: -.06em;
+  background: linear-gradient(180deg, #fff, #cfe3ff 60%, #5ce0ff);
+  -webkit-background-clip: text;
+  background-clip: text;
+  color: transparent;
+  filter: drop-shadow(0 0 24px rgba(92, 224, 255, .4));
+}
+.err-title { font-size: clamp(20px, 3vw, 28px); font-weight: 500; margin: 16px 0 8px; }
+.err-desc { font-size: clamp(14px, 1.6vw, 16px); opacity: .7; margin: 0 0 28px; }
+.err-home { text-decoration: none; }
+
+/* IE 下重置部分新语法 */
+@media all and (-ms-high-contrast: none), (-ms-high-contrast: active) {
+  .subtitle, .stats, .lang-switch { display: block; text-align: center; }
+  .lang-switch { width: max-content; margin-left: auto; margin-right: auto; }
+  .lang-btn { display: inline-block; }
+}
+

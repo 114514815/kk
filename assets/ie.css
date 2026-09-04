@@ -1,0 +1,78 @@
+/* ======================================================
+   IE 专用兜底样式(被条件注释加载,主流浏览器不执行)
+   IE 限制:
+   - 不支持 grid,用 flex 替
+   - 不支持 backdrop-filter,纯色背景
+   - 不支持 inset 简写,top/right/bottom/left 显式
+   - 不支持 min()/env()/100dvh
+   - 不支持 :focus-visible
+   - 不支持 animationend 事件名(IE11 实际支持,但确保)
+   - 不支持 sticky(本例没用到)
+   ====================================================== */
+
+/* 1. .glass-word:用 flex 居中替 grid */
+.glass-word {
+  display: -ms-flexbox;
+  display: flex;
+  -ms-flex-align: center;
+  align-items: center;
+  -ms-flex-pack: center;
+  justify-content: center;
+}
+
+/* 2. .ghost:固定像素宽度 */
+.ghost {
+  width: 700px;
+  max-width: 88vw;
+}
+
+/* 3. .boost:不透明纯色背景,1px 边框代替毛玻璃 */
+.boost {
+  background: #2a456b !important;        /* 深蓝灰,接近透明玻璃的视觉效果 */
+  border: 1px solid #ffffff !important;
+  border-color: rgba(255,255,255,.45) !important;
+  border-radius: 999px;
+  /* 移除 backdrop-filter,IE 会忽略未知属性,这里也显式 none 一下确保 */
+  -webkit-backdrop-filter: none !important;
+  backdrop-filter: none !important;
+}
+
+/* IE 下 :hover 表现 OK,不需要 :focus-visible 替身 */
+
+/* 4. .orbit:.ripple:保留 top/right/bottom/left 写法(已为 IE 准备) */
+
+/* 5. 涟漪 fallback:IE 不支持 animationend 时也能移除 */
+.ripple {
+  /* 显式写一份 */
+}
+
+/* 6. 按钮位置:IE 不支持 env(),固定 8vh = 8% 视高 */
+.boost {
+  bottom: 8% !important;
+}
+
+/* 7. body 高度:不要 -webkit-fill-available / dvh */
+body {
+  min-height: 100vh !important;
+}
+
+/* 8. .glass-word 取消 cursor: pointer (IE 对整个层加 cursor 会导致子节点选中菜单位置异常) */
+.glass-word { cursor: default; }
+.ghost { cursor: pointer; }
+
+/* 9. SVG text 渲染:IE 字体回退 */
+.ghost svg text {
+  font-family: Arial, "Microsoft YaHei", sans-serif;
+}
+
+/* 10. radial-gradient 在 IE10 起支持,但需要 -ms- 前缀仅 IE9,这里不处理 IE9 */
+
+/* 11. prefers-reduced-motion:IE 不识别 media query,不影响 */
+
+/* 12. ::after:IE 8 不支持,IE9+ 支持;OK */
+
+/* 13. box-shadow 在 IE9+ 支持;OK */
+
+/* 14. background-color rgba:IE9+ 支持;OK */
+
+/* 15. CSS transition:IE10+ 支持;OK */

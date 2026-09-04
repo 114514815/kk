@@ -1,0 +1,6 @@
+# https://github.com/ZCH-KK/kk
+User-agent: *
+Allow: /
+
+# GitHub Pages 域名前缀;具体 URL 部署后替换
+Sitemap: https://ZCH-KK.github.io/kk/sitemap.xml

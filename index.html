@@ -1,0 +1,172 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8" />
+  <!-- viewport-fit=cover:允许页面铺到刘海屏/底部安全区,配合 CSS env() 使用 -->
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=5.0, viewport-fit=cover" />
+  <meta name="theme-color" content="#050f1f" />
+  <!-- 避免移动浏览器把数字串自动识别成电话号码加链接 -->
+  <meta name="format-detection" content="telephone=no, email=no, address=no" />
+
+  <!-- 安全相关 meta -->
+  <!-- 严格 CSP:禁内联脚本/样式;只允许本页目录下的资源 + data: 图片(预留) -->
+  <meta http-equiv="Content-Security-Policy"
+        content="default-src 'none';
+                 style-src 'self';
+                 script-src 'self';
+                 img-src 'self' data:;
+                 font-src 'self';
+                 connect-src https://api.github.com;
+                 base-uri 'none';
+                 form-action 'none';
+                 frame-ancestors 'none';
+                 object-src 'none';" />
+  <meta http-equiv="X-Content-Type-Options" content="nosniff" />
+  <meta name="referrer" content="no-referrer" />
+  <meta http-equiv="Permissions-Policy"
+        content="camera=(), microphone=(), geolocation=(), payment=(),
+                 usb=(), midi=(), accelerometer=(), gyroscope=(),
+                 magnetometer=(), display-capture=(), browsing-topics=();" />
+
+  <title>kk — 液态玻璃 / Liquid Glass</title>
+  <meta name="description" content="kk 液态玻璃展示页,2026 年新版。" />
+  <meta name="description" lang="en" content="kk liquid glass showcase, 2026 edition." />
+  <meta name="keywords" content="kk, liquid glass, 液态玻璃, showcase, GitHub Pages" />
+  <meta name="author" content="ZCH-KK" />
+
+  <!-- Open Graph / Facebook -->
+  <meta property="og:type" content="website" />
+  <meta property="og:site_name" content="kk" />
+  <meta property="og:title" content="kk · Liquid Glass 2026" />
+  <meta property="og:description" content="液态玻璃风格的双字母动画展示页。" />
+  <meta property="og:url" content="https://ZCH-KK.github.io/kk/" />
+  <meta property="og:image" content="assets/og.png" />
+  <meta property="og:locale" content="zh_CN" />
+  <meta property="og:locale:alternate" content="en_US" />
+
+  <!-- Twitter Card -->
+  <meta name="twitter:card" content="summary_large_image" />
+  <meta name="twitter:title" content="kk · Liquid Glass 2026" />
+  <meta name="twitter:description" content="液态玻璃风格的双字母动画展示页。" />
+  <meta name="twitter:image" content="assets/og.png" />
+
+  <link rel="icon" type="image/svg+xml" href="assets/favicon.svg" />
+  <link rel="alternate icon" href="data:," />
+  <link rel="stylesheet" href="assets/style.css" />
+  <!-- IE 专用 fallback:用 flexbox 替 grid、纯色替毛玻璃、移除 min()/env() -->
+  <!--[if IE]>
+  <link rel="stylesheet" href="assets/ie.css" />
+  <![endif]-->
+</head>
+<body>
+  <a class="skip-link" href="#main-content" data-zh="跳到主要内容" data-en="Skip to main content">跳到主要内容</a>
+  <!-- 结构化数据:告诉搜索引擎这是个什么页面 -->
+  <script type="application/ld+json">
+  {
+    "@context": "https://schema.org",
+    "@type": "WebSite",
+    "name": "kk",
+    "alternateName": "Liquid Glass 2026",
+    "url": "https://ZCH-KK.github.io/kk/",
+    "description": "液态玻璃风格的双字母动画展示页。",
+    "inLanguage": ["zh-CN", "en"],
+    "author": {
+      "@type": "Person",
+      "name": "ZCH-KK",
+      "url": "https://github.com/ZCH-KK"
+    },
+    "publisher": {
+      "@type": "Person",
+      "name": "ZCH-KK"
+    },
+    "potentialAction": {
+      "@type": "SearchAction",
+      "target": "https://github.com/ZCH-KK?tab=repositories&q={search_term_string}",
+      "query-input": "required name=search_term_string"
+    }
+  }
+  </script>
+  <div class="backdrop" aria-hidden="true">
+    <div class="orbit">
+      <div class="blob b1"></div>
+      <div class="blob b2"></div>
+      <div class="blob b3"></div>
+      <div class="blob b4"></div>
+    </div>
+  </div>
+
+  <main id="main-content" class="stage" role="main">
+    <a class="boost"
+       href="https://github.com/ZCH-KK/kk"
+       target="_blank"
+       rel="noopener noreferrer nofollow">
+      去 GitHub 助力该网页发展
+    </a>
+    <p class="stats" aria-live="polite">
+      <span class="stats-label" data-zh="已有" data-en=""></span>
+      <span class="stars-count" data-zh="…" data-en="…">…</span>
+      <span class="stats-suffix" data-zh="人助力" data-en="stars">stars</span>
+    </p>
+    <div class="lang-switch" role="group" aria-label="Language">
+      <button type="button" class="lang-btn" data-lang="zh" aria-pressed="true">中文</button>
+      <button type="button" class="lang-btn" data-lang="en" aria-pressed="false">EN</button>
+    </div>
+    <div class="glass-word">
+      <div class="ghost" role="img" aria-label="kk 液态玻璃标题" lang="en">
+      <svg viewBox="0 0 1000 440" xmlns="http://www.w3.org/2000/svg" aria-hidden="true" focusable="false">
+        <defs>
+          <linearGradient id="body" x1="0%" y1="0%" x2="0%" y2="100%">
+            <stop offset="0%"   stop-color="#ffffff" stop-opacity=".60"/>
+            <stop offset="38%"  stop-color="#f3f8ff" stop-opacity=".42"/>
+            <stop offset="70%"  stop-color="#e8f1fd" stop-opacity=".34"/>
+            <stop offset="100%" stop-color="#d6e6fa" stop-opacity=".46"/>
+          </linearGradient>
+
+          <linearGradient id="rimGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+            <stop offset="0%"   stop-color="#ffffff" stop-opacity="0"/>
+            <stop offset="28%"  stop-color="#ffffff" stop-opacity="1"/>
+            <stop offset="50%"  stop-color="#ffffff" stop-opacity=".4"/>
+            <stop offset="75%"  stop-color="#ffffff" stop-opacity=".75"/>
+            <stop offset="100%" stop-color="#ffffff" stop-opacity="0"/>
+          </linearGradient>
+
+          <linearGradient id="edgeLine" x1="0%" y1="0%" x2="0%" y2="100%">
+            <stop offset="0%"   stop-color="#ffffff" stop-opacity=".9"/>
+            <stop offset="55%"  stop-color="#ffffff" stop-opacity=".35"/>
+            <stop offset="100%" stop-color="#cfe3ff" stop-opacity=".55"/>
+          </linearGradient>
+        </defs>
+
+        <text x="500" y="308" text-anchor="middle" dominant-baseline="central"
+              font-family="-apple-system, 'SF Pro Display', 'Segoe UI', 'Helvetica Neue', Arial, sans-serif"
+              font-weight="700" font-size="330" letter-spacing="-6"
+              fill="url(#body)">kk</text>
+
+        <text x="500" y="308" text-anchor="middle" dominant-baseline="central"
+              font-family="-apple-system, 'SF Pro Display', 'Segoe UI', 'Helvetica Neue', Arial, sans-serif"
+              font-weight="700" font-size="330" letter-spacing="-6"
+              fill="none" stroke="url(#edgeLine)" stroke-width="3.4"
+              stroke-linejoin="round" stroke-linecap="round"
+              opacity=".95">kk</text>
+
+        <text x="500" y="308" text-anchor="middle" dominant-baseline="central"
+              font-family="-apple-system, 'SF Pro Display', 'Segoe UI', 'Helvetica Neue', Arial, sans-serif"
+              font-weight="700" font-size="330" letter-spacing="-6"
+              fill="none" stroke="url(#rimGrad)" stroke-width="2.8"
+              stroke-linejoin="round" stroke-linecap="round"
+              opacity=".95">kk</text>
+      </svg>
+    </div>
+  </div>
+  </main>
+
+  <footer class="site-foot" role="contentinfo">
+    <small class="foot-line" data-zh="© 2026 ZCH-KK · MIT" data-en="© 2026 ZCH-KK · MIT">© 2026 ZCH-KK · MIT</small>
+  </footer>
+  <script src="assets/main.js" defer></script>
+  <script src="assets/lang.js" defer></script>
+  <!--[if IE]>
+  <script src="assets/ie-polyfills.js" defer></script>
+  <![endif]-->
+</body>
+</html>
