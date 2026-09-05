@@ -301,10 +301,12 @@ body {
 .tools-rail {
   position: fixed;
   top: 50%;
-  right: 18px;
+  right: -28px; /* 旋 90° 后胶囊变高,右负边让按钮一半露在边缘 */
   transform: translateY(-50%);
   z-index: 5; /* 必须比 .glass-word(z=2) 高,且大于 .ripple(z=3) */
   -webkit-tap-highlight-color: transparent;
+  /* 为了点击命中区域始终包含旋转后的按钮 */
+  padding: 8px 32px; /* 上下左右各扩出可点击区 */
 }
 .tools-btn {
   display: inline-flex;
@@ -324,18 +326,21 @@ body {
   backdrop-filter: blur(12px) saturate(140%);
   box-shadow: 0 4px 14px rgba(0, 0, 0, 0.22),
               inset 0 1px 0 rgba(255, 255, 255, 0.18);
-  transition: transform .18s cubic-bezier(.34, 1.56, .64, 1),
+  transition: transform .22s cubic-bezier(.34, 1.56, .64, 1),
               background .18s ease,
               border-color .18s ease;
   white-space: nowrap;
+  /* 旋转 90° 让按钮竖立贴在右边 */
+  transform: rotate(-90deg);
+  transform-origin: 50% 50%;
 }
 .tools-btn:hover {
   background: rgba(255, 255, 255, 0.18);
   border-color: rgba(255, 255, 255, 0.45);
-  transform: translateX(-2px);
+  transform: rotate(-90deg) translateX(-2px);
 }
 .tools-btn:active {
-  transform: scale(.96);
+  transform: rotate(-90deg) scale(.96);
 }
 .tools-btn:focus {
   outline: 2px solid rgba(255, 255, 255, 0.85);
@@ -351,9 +356,14 @@ body {
 @media (max-width: 520px) {
   .tools-label { display: none; }
   .tools-btn { padding: 10px 12px; }
+  /* 窄屏旋转后只显示小齿轮,胶囊变薄 */
+  .tools-btn { transform: rotate(-90deg) scale(0.86); }
+  .tools-btn:hover { transform: rotate(-90deg) scale(0.86) translateX(-2px); }
+  .tools-btn:active { transform: rotate(-90deg) scale(0.82); }
+  .tools-rail { right: -22px; }
 }
 @media (prefers-reduced-motion: reduce) {
-  .tools-btn, .tools-btn:hover, .tools-btn:active { transition: none; transform: none; }
+  .tools-btn, .tools-btn:hover, .tools-btn:active { transition: none; transform: rotate(-90deg); }
 }
 
 .site-foot {
