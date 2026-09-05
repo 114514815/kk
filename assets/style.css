@@ -297,36 +297,42 @@ body {
 
 /* footer */
 /* 工具箱入口按钮：与 .boost 同款毛玻璃胶囊，但走 normal flow，避免与 boost 重叠 */
-.tools-cta {
-  display: flex;
-  justify-content: center;
-  margin: 14px 0 36px;
+/* ================= 侧边工具箱入口 ================= */
+.tools-rail {
+  position: fixed;
+  top: 50%;
+  right: 18px;
+  transform: translateY(-50%);
+  z-index: 5; /* 必须比 .glass-word(z=2) 高,且大于 .ripple(z=3) */
+  -webkit-tap-highlight-color: transparent;
 }
 .tools-btn {
-  display: inline-block;
-  padding: 10px 20px;
-  min-height: 38px;
-  font-size: 14px;
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  padding: 10px 16px;
+  min-height: 40px;
+  font-size: 13px;
   font-weight: 500;
   letter-spacing: 0.5px;
-  color: rgba(220, 235, 255, 0.88);
+  color: rgba(220, 235, 255, 0.92);
   text-decoration: none;
-  background: rgba(255, 255, 255, 0.08);
-  border: 1px solid rgba(255, 255, 255, 0.22);
+  background: rgba(255, 255, 255, 0.10);
+  border: 1px solid rgba(255, 255, 255, 0.26);
   border-radius: 999px;
   -webkit-backdrop-filter: blur(12px) saturate(140%);
   backdrop-filter: blur(12px) saturate(140%);
-  box-shadow: 0 4px 14px rgba(0, 0, 0, 0.18),
-              inset 0 1px 0 rgba(255, 255, 255, 0.16);
+  box-shadow: 0 4px 14px rgba(0, 0, 0, 0.22),
+              inset 0 1px 0 rgba(255, 255, 255, 0.18);
   transition: transform .18s cubic-bezier(.34, 1.56, .64, 1),
               background .18s ease,
               border-color .18s ease;
-  -webkit-tap-highlight-color: transparent;
+  white-space: nowrap;
 }
 .tools-btn:hover {
-  background: rgba(255, 255, 255, 0.16);
-  border-color: rgba(255, 255, 255, 0.42);
-  transform: translateY(-1px);
+  background: rgba(255, 255, 255, 0.18);
+  border-color: rgba(255, 255, 255, 0.45);
+  transform: translateX(-2px);
 }
 .tools-btn:active {
   transform: scale(.96);
@@ -336,8 +342,18 @@ body {
   outline-offset: 3px;
 }
 .tools-btn:focus:not(:focus-visible) { outline: none; }
+.tools-glyph {
+  font-size: 16px;
+  line-height: 1;
+  opacity: 0.9;
+}
+/* 窄屏:只显示齿轮图标 */
+@media (max-width: 520px) {
+  .tools-label { display: none; }
+  .tools-btn { padding: 10px 12px; }
+}
 @media (prefers-reduced-motion: reduce) {
-  .tools-btn { transition: none; }
+  .tools-btn, .tools-btn:hover, .tools-btn:active { transition: none; transform: none; }
 }
 
 .site-foot {
