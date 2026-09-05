@@ -318,10 +318,10 @@ body {
   flex-direction: column; /* 竖排:齿轮上,文字下 */
   align-items: center;
   justify-content: center;
-  gap: 6px;
-  padding: 12px 14px;
-  min-height: 40px;
-  font-size: 12px;
+  gap: 4px;
+  padding: 8px 10px;
+  min-height: 32px;
+  font-size: 11px;
   font-weight: 500;
   letter-spacing: 0.5px;
   color: rgba(220, 235, 255, 0.92);
@@ -352,14 +352,15 @@ body {
 }
 .tools-btn:focus:not(:focus-visible) { outline: none; }
 .tools-glyph {
-  font-size: 16px;
+  font-size: 14px;
   line-height: 1;
   opacity: 0.9;
 }
-/* 窄屏:只显示齿轮图标 */
+/* 窄屏:只显示齿轮图标,再小一档 */
 @media (max-width: 520px) {
   .tools-label { display: none; }
-  .tools-btn { padding: 10px 12px; }
+  .tools-btn { padding: 7px 9px; min-height: 28px; }
+  .tools-rail { gap: 4px; }
 }
 @media (prefers-reduced-motion: reduce) {
   .tools-btn, .tools-btn:hover, .tools-btn:active { transition: none; }
